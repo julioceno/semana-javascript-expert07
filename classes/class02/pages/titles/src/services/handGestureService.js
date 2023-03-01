@@ -38,7 +38,7 @@ export default class HandGestureService {
       );
 
       yield { event: result.name, x, y }; // TODO: entender o yield
-      console.log('detected', gesturesStrings[result.name], x, y);
+      /*  console.log('detected', gesturesStrings[result.name], x, y); */
     }
   }
 

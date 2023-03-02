@@ -18,6 +18,7 @@ const camera = await Camera.init();
 
 const factory = {
   async initialize() {
+    console.log('factory');
     return HandGestureController.initialize({
       camera,
       view: new HandGestureView({

@@ -1,0 +1,21 @@
+video {
+  width: 95%;
+  margin: 10px;
+}
+button {
+  margin: 10px;
+}
+.button-container {
+  margin-left: 20px;
+}
+
+#hands {
+  /* faz com que elementos possam ser clicaveis */
+  pointer-events: none;
+
+  /* faz ficar em cima dos elementos */
+  position: fixed;
+
+  /* fica à frente dos elementos */
+  z-index: 50;
+}

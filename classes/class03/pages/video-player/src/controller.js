@@ -19,7 +19,6 @@ export default class Controller {
 
   #configureWorker(worker) {
     let ready = false;
-    console.log('aaa');
     worker.onmessage = ({ data }) => {
       if ('READY' === data) {
         // TODO: aqui que é o responsável por rodar habilitar o button

@@ -1,9 +1,11 @@
 export default class HandGestureView {
   #handsCanvas = document.querySelector('#hands');
   #canvasContext = this.#handsCanvas.getContext('2d');
-  constructor() {
+  #fingerLookupIndexes;
+  constructor({ fingerLookupIndexes }) {
     this.#handsCanvas.width = globalThis.screen.availWidth;
     this.#handsCanvas.height = globalThis.screen.availHeight;
+    this.#fingerLookupIndexes = fingerLookupIndexes;
   }
 
   clearCanvas() {
@@ -16,18 +18,35 @@ export default class HandGestureView {
   }
 
   drawResults(hands) {
-    console.log('inicio daqui');
     for (const { keypoints, handedness } of hands) {
       if (!keypoints) continue;
 
-      this.#canvasContext.fillStyle = handedness === 'Left' ? 'red' : 'green';
+      this.#canvasContext.fillStyle =
+        handedness === 'Left' ? 'rgb(44,212,103)' : 'rgb(44,212,103)';
       this.#canvasContext.strokeStyle = 'white';
       this.#canvasContext.lineWidth = 8;
       this.#canvasContext.lineJoin = 'round';
 
       // juntas
       this.#drawJoients(keypoints);
+      this.#drawFingersAndHoverElements(keypoints);
     }
+  }
+
+  clickOnElement(x, y) {
+    const element = document.elementFromPoint(x, y);
+    if (!element) return;
+    console.log({ element, x, y });
+    const rect = element.getBoundingClientRect();
+    const event = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+      clientX: rect.left + x,
+      clientY: rect.top + y,
+    });
+
+    element.dispatchEvent(event);
   }
 
   #drawJoients(keypoints) {
@@ -42,6 +61,25 @@ export default class HandGestureView {
 
       this.#canvasContext.arc(newX, newY, radius, startAngle, endAngle);
       this.#canvasContext.fill();
+    }
+  }
+
+  #drawFingersAndHoverElements(keypoints) {
+    const fingers = Object.keys(this.#fingerLookupIndexes);
+    for (const finger of fingers) {
+      const points = this.#fingerLookupIndexes[finger].map(
+        (index) => keypoints[index]
+      );
+
+      const region = new Path2D();
+
+      const [{ x, y }] = points;
+      region.moveTo(x, y);
+      for (const point of points) {
+        region.lineTo(point.x, point.y);
+      }
+
+      this.#canvasContext.stroke(region);
     }
   }
 

@@ -14,6 +14,8 @@ import {
   knowGestures,
 } from '../util/util.js';
 
+let styler = new PseudoStyler();
+
 const camera = await Camera.init();
 
 const factory = {
@@ -23,6 +25,7 @@ const factory = {
       camera,
       view: new HandGestureView({
         fingerLookupIndexes,
+        styler,
       }),
       service: new HandGestureService({
         gesturesStrings,

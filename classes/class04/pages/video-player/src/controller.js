@@ -3,12 +3,13 @@ export default class Controller {
   #camera;
   #worker;
   #blinkCounter = 0;
-  constructor({ view, worker, camera }) {
+  constructor({ view, worker, camera, videoUrl }) {
     this.#view = view;
     this.#camera = camera;
     this.#worker = this.#configureWorker(worker);
 
     this.#view.configureOnBtnClick(this.onBtnStart.bind(this));
+    this.#view.setVideoSrc(videoUrl);
   }
 
   static async initialize(deps) {
@@ -19,13 +20,10 @@ export default class Controller {
 
   #configureWorker(worker) {
     let ready = false;
+
     worker.onmessage = ({ data }) => {
       if ('READY' === data) {
         // TODO: aqui que é o responsável por rodar habilitar o button
-        console.log('worker is ready!');
-        this.#view.enableButton();
-        ready = true;
-        return;
       }
       const blinked = data.blinked;
       this.#blinkCounter += blinked;
